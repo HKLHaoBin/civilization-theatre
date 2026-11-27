@@ -1,0 +1,17 @@
+# Research/runtime material excluded from the source-only repository
+evidence/
+runtime/
+delivery/
+deliverables/
+spikes/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.wal
+*.shm
+.env
+.env.*
+__pycache__/
+*.py[cod]

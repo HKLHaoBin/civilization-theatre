@@ -1,0 +1,4 @@
+# Optional SIWC only; NOT installed or executed during source preparation.
+# Pins verified from the upstream project tags, not claimed latest/security-audited.
+PyJWT==2.10.1
+cryptography==46.0.3

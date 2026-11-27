@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>文明剧团 · 本机观察台</title>
+  <link rel="stylesheet" href="/app.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">跳到观察区</a>
+  <header class="topbar">
+    <div class="identity"><p class="eyebrow">本机 · 政治文明模拟</p><h1>文明剧团<span>观察台</span></h1></div>
+    <div class="session"><span id="model-mode" class="badge">脚本角色 / 脚本 DM · 连接中</span><p id="day-status">日数与状态加载中…</p></div>
+    <nav class="controls" aria-label="模拟运行控制">
+      <button id="step" class="primary" data-write disabled>步进一天</button>
+      <button id="run" data-write disabled>运行</button>
+      <button id="pause" data-write disabled>暂停</button>
+    </nav>
+  </header>
+  <div class="connection" aria-live="polite"><p id="app-status" role="status">正在连接本机世界…</p><button id="retry" type="button">重新读取</button></div>
+  <main id="workspace" class="workspace" aria-busy="true">
+    <section class="world panel" aria-labelledby="world-heading">
+      <div class="section-head"><div><p class="eyebrow">观众 · 全知世界</p><h2 id="world-heading">聚落与疆域</h2></div><span id="world-version" class="mono">—</span></div>
+      <p class="scope-note">全知区展示后台事实，不代表任何人物已知。拓扑示意，不是测绘地图；位置与连线取自世界数据。</p>
+      <div id="world-metrics" class="metrics" aria-label="全知世界指标">指标加载中…</div>
+      <details class="mechanism"><summary>全知病理机制与冻结身份</summary><p class="muted">未校准游戏规则，不是医学结论；此区不是人物知识，历史只展示该版本实际记录。</p><div id="pathology-identity">机制身份加载中…</div></details>
+      <div class="map-wrap"><svg id="map" viewBox="0 0 800 440" role="group" aria-label="聚落拓扑图，Tab选择聚落，Enter查看详情"><title>聚落拓扑示意图</title></svg><p id="map-status" class="map-status">等待聚落数据…</p></div>
+      <div id="map-legend" class="legend" aria-label="国家颜色图例"></div>
+      <div id="place-detail" class="place-detail" aria-live="polite">选择聚落查看全知库存与病理状态。</div>
+    </section>
+    <aside class="people panel" aria-labelledby="people-heading">
+      <div class="section-head"><div><p class="eyebrow">常驻人物</p><h2 id="people-heading">人物与见闻</h2></div></div>
+      <div class="selectors"><label>国家<select id="country-select" disabled><option value="">全部国家</option></select></label><label>人物<select id="person-select" disabled><option value="">等待人物数据</option></select></label></div>
+      <section id="person-card" class="character" aria-labelledby="card-heading">
+        <h3 id="card-heading">独立人物卡</h3><p id="person-identity" class="muted">选择人物查看身份。</p>
+        <details id="card-editor"><summary>查看 / 前向编辑人格卡</summary>
+          <p class="muted">仅改变今后的价值、利益、风险与软使命；不能改职位、位置或资源。切换人物时保留本页未提交草稿。</p>
+          <form id="card-form"><fieldset id="card-fields" disabled><legend class="sr-only">人格卡字段</legend>
+            <label>价值观<textarea name="values" rows="2" maxlength="4000"></textarea></label>
+            <label>利益与关切<textarea name="interests" rows="2" maxlength="4000"></textarea></label>
+            <label>风险偏好<textarea name="risk" rows="2" maxlength="4000"></textarea></label>
+            <label>文明软使命<textarea name="mission" rows="2" maxlength="4000"></textarea></label>
+            <div class="form-actions"><button id="save-card" class="primary" data-write type="submit" disabled>保存前向修改</button><button id="reset-card" type="button">放弃此人物草稿</button></div>
+          </fieldset></form>
+        </details><p id="card-feedback" class="feedback" role="status" aria-live="polite"></p>
+      </section>
+      <section class="knowledge" aria-labelledby="knowledge-heading"><p class="eyebrow">角色 · 合法获得渠道</p><h3 id="knowledge-heading">合法见闻</h3><p id="person-status" class="muted" role="status">尚未加载人物见闻。</p><div id="observations">见闻来自人物接口，不以全知指标补齐。</div></section>
+    </aside>
+    <section class="causal-panel panel" aria-labelledby="causality-heading">
+      <div class="section-head"><div><p class="eyebrow">观众 · 全知因果审计</p><h2 id="causality-heading">原话 → 裁定 → 已兑现</h2></div></div>
+      <p class="scope-note">仅旁观者可见，不是人物知识。裁定中的效果、代价和收益均属草案；只有提交回执是已兑现记录，排队不代表成功送达。</p>
+      <p id="causality-status" class="scope-note" role="status" aria-live="polite">因果记录加载中…</p>
+      <div id="causality" class="causal-list" aria-busy="true"></div>
+    </section>
+    <section class="timeline panel" aria-labelledby="timeline-heading">
+      <div class="section-head"><div><p class="eyebrow">观众 · 全知记录</p><h2 id="timeline-heading">时间轴 / 事件流</h2></div><button id="latest" disabled>返回最新</button></div>
+      <div class="replay-controls"><label for="replay">历史版本 <output id="replay-value">—</output></label><input id="replay" type="range" min="1" max="1" value="1" step="1" disabled aria-describedby="replay-status"><p id="replay-status" role="status">最新 · 等待版本信息</p></div>
+      <ol id="events" class="event-list"><li class="empty">事件加载中…</li></ol>
+    </section>
+  </main>
+  <footer><details><summary>模型 / 密钥设置与本轮边界</summary><p id="settings-note">显式 real 模式可使用独立角色与DM服务；脚本模式保持离线。配置元数据不证明已连接或验收。场景与病理参数未校准，不代表历史或医学结论。</p><p><a href="/settings.html">本机模型 / 密钥设置（保存不调用模型）</a></p><ul id="limitations"></ul></details><span>本地数据 · 无外部字体 / CDN</span></footer>
+</body>
+</html>
