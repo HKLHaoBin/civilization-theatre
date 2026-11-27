@@ -52,5 +52,6 @@ Blockers and unverified layers
 - The passing SQLite acceptance fixture denies an outside-workspace database by withholding AppContainer access; the optional explicit --deny CLI path is not used as the acceptance proof.
 - LPAC-specific policy-mode evidence is not claimed; the verified runtime boundary is Windows AppContainer identity.
 - No merge or self-review was performed.
+- Completion relay JSON was not written: HERMES_COMPLETION_RELAY_STAGE_ID and HERMES_COMPLETION_RELAY_COMPLETION_FILE were absent, so the required stage_id could not be populated without fabrication. The fallback JSON path remains absent.
 
 External delivery fields are verified separately after commit/push/PR readback and are reported in the final response.
