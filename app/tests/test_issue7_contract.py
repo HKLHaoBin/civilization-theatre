@@ -6,6 +6,7 @@ not establish real-service or billing acceptance.
 """
 import json
 from pathlib import Path
+import queue
 import tempfile
 import threading
 from typing import Any, cast
@@ -104,6 +105,53 @@ class ProviderRoutingTests(unittest.TestCase):
         with self.assertRaisesRegex(ProviderFault, 'REAL_UNCONFIGURED'):
             host._request({'synthetic': True})
 
+    def test_bound_scripted_router_handles_dm_without_legacy_provider(self):
+        calls = []
+        legacy_calls = []
+        pi = PiProviderAdapter(
+            lambda payload, attempt: calls.append(('role', payload, attempt)) or {'route': 'role'},
+            dm_call=lambda payload, attempt, version: calls.append(('dm', payload, attempt, version)) or {'route': 'router'},
+        )
+        router = ProviderRouter('scripted-pi', pi=pi)
+
+        class AdjudicatorProbe:
+            def __init__(self):
+                self.provider = None
+
+            def resolve(self, person_id, intent_id, text, provider, **options):
+                self.provider = provider
+                return provider({'synthetic': True})
+
+        host = cast(Any, object.__new__(ActorHost))
+        host.execution_fenced = False
+        host._attempt = None
+        host._local = threading.local()
+        host.adjudicator = adjudicator = AdjudicatorProbe()
+        host.dm_provider = lambda payload: legacy_calls.append(payload) or {'route': 'legacy'}
+        host.real_gateway = None
+        host.provider_router = router
+
+        result = host._submit('person', 'intent', {'action': 'propose', 'text': 'synthetic'})
+
+        self.assertEqual(result, {'route': 'router'})
+        self.assertEqual([call[0] for call in calls], ['dm'])
+        self.assertEqual(calls[0][3], None)
+        self.assertEqual(legacy_calls, [])
+        self.assertIsNotNone(adjudicator.provider)
+
+    def test_worker_free_real_gateway_stop_without_router_closes_gateway(self):
+        gateway = _Gateway()
+        host = cast(Any, object.__new__(ActorHost))
+        host.real_gateway = gateway
+        host._worker_lock = threading.RLock()
+        host._process = None
+        host._responses = queue.Queue()
+        host._readers = []
+
+        host._stop()
+
+        self.assertEqual(gateway.closed, 1)
+
 
 class CredentialAndSettingsTests(unittest.TestCase):
     def test_synthetic_credential_is_opaque_and_role_dm_refs_are_independent(self):
@@ -168,6 +216,17 @@ class RedactionAndPauseContractTests(unittest.TestCase):
         class UntrustedFault:
             code = SYNTHETIC_SECRET
         self.assertEqual(exception_code(UntrustedFault()), 'PROVIDER_ERROR')
+
+    def test_set_cookie_keys_are_redacted_case_insensitively(self):
+        payload = {
+            'Set-Cookie': 'session=SYNTHETIC_COOKIE_SENTINEL',
+            'sEt-CoOkIe': 'refresh=SYNTHETIC_COOKIE_SENTINEL',
+        }
+
+        safe = cast(dict[str, Any], redact(payload))
+
+        self.assertEqual(safe['Set-Cookie'], '<redacted>')
+        self.assertEqual(safe['sEt-CoOkIe'], '<redacted>')
 
     def test_host_has_fail_closed_pause_boundary(self):
         source = (Path(__file__).resolve().parents[1] / 'actors.py').read_text()

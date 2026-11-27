@@ -10,6 +10,7 @@ Stage
 - PR base/head readback: main / issue/i7
 - PR state at readback: OPEN
 - Review: not started; no merge performed
+- Fix/re-review stage: `i7-fix-r1-20261127`; three bounded maintainer findings only
 
 Delivered files
 - ISSUE7-REAL-SERVICE.md
@@ -32,19 +33,23 @@ Implementation evidence
 - Existing gateway retry budget and unknown-usage behavior are exercised through fake transports; no cost is converted from unknown to zero.
 - Existing host/coordinator failure path remains the fail-closed technical-pause boundary; contract tests verify the pause hook and no-fallback route.
 - Settings UI states that saving does not test a connection and real call/connection/billing acceptance is unverified.
+- DM submission now honors a bound `scripted-pi` ProviderRouter when no real gateway is present; real-mode route mismatches fail closed without restoring a Pi fallback.
+- `_stop()` treats the router as optional and closes a worker-free real gateway when construction bypassed `ActorHost.__init__`.
+- Redaction normalizes `Set-Cookie` to `set_cookie`; mixed-case cookie-key regressions are covered.
 - No credential, token, cookie, private log, database, or .env file was read. Test values are synthetic/redacted only.
 
 Permitted checks and exits
 - `python3 -m py_compile app/redaction.py app/usage_accounting.py app/provider_adapter.py app/credential_adapter.py app/real_settings.py app/real_provider.py app/actors.py app/product_cli.py app/tests/test_issue7_contract.py` — exit 0.
 - `node --check app/web/settings.js && node --check app/pi_worker.mjs` — exit 0.
 - `git diff --check` — exit 0.
-- `python3 -m unittest -v app.tests.test_issue7_contract app.tests.test_real_provider967.BindingTests app.tests.test_real_provider967.SettingsTests app.tests.test_real_provider967.GatewayTests app.tests.test_real_lifecycle967.LifecycleTests` — exit 0; 26 tests passed.
+- `python3 -m unittest -v app.tests.test_issue7_contract app.tests.test_real_provider967.BindingTests app.tests.test_real_provider967.SettingsTests app.tests.test_real_provider967.GatewayTests app.tests.test_real_lifecycle967.LifecycleTests` — exit 0; 29 synthetic tests passed, including the three new regressions.
 - `python3 -m unittest -v app.tests.test_siwc1008_settings` — exit 0; 5 synthetic settings-lock tests passed.
 - `node app/tests/test_settings992.cjs` — exit 0; 13 VM/fakeDOM contract tests passed.
 
 Additional bounded checks not used as Issue #7 acceptance
 - `python3 -m unittest -v app.tests.test_web_assets` — exit 1. The unchanged pre-existing observation HTML contract expected the literal `未接入`; the failure is outside this Issue #7 scope and no web observation asset was modified.
 - `python3 -m unittest -v app.tests.test_siwc992_backend` — exit 1 with 2770 synthetic SIWC boundary failures. This was not used for Issue #7 acceptance; the SIWC implementation was not changed in this stage and the failure was not investigated because I1–I6 surfaces are excluded.
+- `python3 -m unittest -v app.tests.test_siwc998_cancel` — exit 1 with 3 failures and 1 error in unchanged SIWC cancellation/store cases. This was not used for Issue #7 acceptance; no SIWC file was modified.
 
 Delivery readback
 - `git push -u origin issue/i7` — exit 0.

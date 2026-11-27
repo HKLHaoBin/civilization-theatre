@@ -403,10 +403,12 @@ class ActorHost:
         return response.get('result', response)
 
     def _stop(self):
-        if self.provider_router is not None:
-            self.provider_router.close()
-        elif self.real_gateway is not None:
-            self.real_gateway.close()
+        router = getattr(self, 'provider_router', None)
+        gateway = getattr(self, 'real_gateway', None)
+        if router is not None:
+            router.close()
+        elif gateway is not None:
+            gateway.close()
         with self._worker_lock:
             return self._stop_worker()
 
@@ -802,12 +804,32 @@ class ActorHost:
         options = {'execution': execution} if execution is not None else {}
         if body.get('action') == 'propose' and self.adjudicator is not None:
             attempt = self._attempt
-            provider_target = self.dm_provider
-            if not callable(provider_target):
-                raise ActorRunError('DM_PROVIDER_UNAVAILABLE')
-            if self.real_gateway is not None:
-                gateway = self.real_gateway
-                router = self.provider_router
+            provider_target = getattr(self, 'dm_provider', None)
+            router = getattr(self, 'provider_router', None)
+            gateway = getattr(self, 'real_gateway', None)
+            if router is not None:
+                if router.real != (gateway is not None):
+                    raise ActorRunError('ACTOR_PROVIDER_MODE_MISMATCH')
+                if router.real:
+                    with self._private(execution, person_id) as db:
+                        row = db.execute(f'SELECT request FROM {self._schema}actor_intents WHERE person_id=? AND intent_id=?',
+                                         (person_id, intent_id)).fetchone()
+                        if row is None:
+                            raise ActorRunError('ACTOR_RECOVERY_UNPROVEN')
+                        original_request = json.loads(row['request'])
+                        if original_request.get('schema_version') not in (2, 3):
+                            raise ActorRunError('ACTOR_PROVIDER_MODE_MISMATCH')
+                        version = original_request['service_version']
+                    def routed_target(payload):
+                        return router.dm(payload, getattr(self._local, 'attempt', None), version)
+                    provider_target = routed_target
+                else:
+                    def scripted_target(payload):
+                        return router.dm(payload, getattr(self._local, 'attempt', None), None)
+                    provider_target = scripted_target
+            elif gateway is not None:
+                if not callable(provider_target):
+                    raise ActorRunError('DM_PROVIDER_UNAVAILABLE')
                 with self._private(execution, person_id) as db:
                     row = db.execute(f'SELECT request FROM {self._schema}actor_intents WHERE person_id=? AND intent_id=?',
                                      (person_id, intent_id)).fetchone()
@@ -817,14 +839,11 @@ class ActorHost:
                     if original_request.get('schema_version') not in (2, 3):
                         raise ActorRunError('ACTOR_PROVIDER_MODE_MISMATCH')
                     version = original_request['service_version']
-                if router is not None:
-                    def routed_target(payload):
-                        return router.dm(payload, getattr(self._local, 'attempt', None), version)
-                    provider_target = routed_target
-                else:
-                    def gateway_target(payload):
-                        return gateway.dm(payload, getattr(self._local, 'attempt', None), version)
-                    provider_target = gateway_target
+                def gateway_target(payload):
+                    return gateway.dm(payload, getattr(self._local, 'attempt', None), version)
+                provider_target = gateway_target
+            elif not callable(provider_target):
+                raise ActorRunError('DM_PROVIDER_UNAVAILABLE')
             provider = provider_target
             if attempt is not None and attempt.permit == execution:
                 def attempted_provider(payload):

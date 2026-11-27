@@ -19,7 +19,7 @@ _SENSITIVE_KEYS = frozenset({
     'access_token', 'api_key', 'apikey', 'authorization', 'client_secret',
     'code', 'code_verifier', 'cookie', 'credential', 'credential_blob',
     'credential_ref', 'id_token', 'password', 'pkce', 'private_key',
-    'refresh_token', 'secret', 'secret_key', 'set-cookie', 'token',
+    'refresh_token', 'secret', 'secret_key', 'set_cookie', 'token',
 })
 
 
