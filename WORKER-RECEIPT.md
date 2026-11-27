@@ -10,7 +10,7 @@ Stage
 - PR base/head readback: main / issue/i7
 - PR state at readback: OPEN
 - Review: not started; no merge performed
-- Fix/re-review stage: `i7-fix-r1-20261127`; three bounded maintainer findings only
+- Fix/re-review stage: `i7-fix-r2-20261127`; three bounded maintainer findings only
 
 Delivered files
 - ISSUE7-REAL-SERVICE.md
@@ -46,6 +46,13 @@ Permitted checks and exits
 - `python3 -m unittest -v app.tests.test_siwc1008_settings` — exit 0; 5 synthetic settings-lock tests passed.
 - `node app/tests/test_settings992.cjs` — exit 0; 13 VM/fakeDOM contract tests passed.
 
+Resumed fix/re-review checks
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v app.tests.test_issue7_contract.ProviderRoutingTests app.tests.test_issue7_contract.RedactionAndPauseContractTests` — exit 0; 9 fake/redacted routing and redaction tests passed, including the three new regressions.
+- `node --check app/web/settings.js` and `node --check app/pi_worker.mjs` — exit 0.
+- `python3 -m py_compile app/actors.py app/redaction.py app/tests/test_issue7_contract.py` — exit 0.
+- `git diff --check` — exit 0.
+- This resumed stage made no credential, live/paid, network, model, browser, device, or database calls.
+
 Additional bounded checks not used as Issue #7 acceptance
 - `python3 -m unittest -v app.tests.test_web_assets` — exit 1. The unchanged pre-existing observation HTML contract expected the literal `未接入`; the failure is outside this Issue #7 scope and no web observation asset was modified.
 - `python3 -m unittest -v app.tests.test_siwc992_backend` — exit 1 with 2770 synthetic SIWC boundary failures. This was not used for Issue #7 acceptance; the SIWC implementation was not changed in this stage and the failure was not investigated because I1–I6 surfaces are excluded.
@@ -60,15 +67,21 @@ Delivery readback
 
 Fix/re-review delivery readback
 - Fix source/tests/docs commit: `a24522ae80de87f6917a93d2e77a971d4297daa1`.
-- `git push -u origin issue/i7` — exit 0; remote head after the fix delivery: `a24522ae80de87f6917a93d2e77a971d4297daa1`.
-- `gh pr view 11 --repo HKLHaoBin/civilization-theatre --json ...` — exit 0; PR URL `https://github.com/HKLHaoBin/civilization-theatre/pull/11`, base `main`, head `issue/i7`, state `OPEN`, head readback equal to the fix commit.
+- Receipt delivery commit already present: `9bf2a59e7c99b6ccc323366b366c9cf77be70efb`.
+- `git push -u origin issue/i7` — exit 0; source fix commit is present on the remote branch.
+- `gh pr view 11 --repo HKLHaoBin/civilization-theatre --json ...` — exit 0 at readback; PR URL `https://github.com/HKLHaoBin/civilization-theatre/pull/11`, base `main`, head `issue/i7`, state `OPEN`, remote head `9bf2a59e7c99b6ccc323366b366c9cf77be70efb` including the fix commit.
 - No review, self-review, merge, CI, release, device, browser, live provider, account, or billing acceptance was run or claimed.
 
-Completion relay blocker
+Prior completion relay blocker (r1)
 - `HERMES_COMPLETION_RELAY_STAGE_ID` was absent from the stage environment.
 - The required fallback path `D:/Dev/src/civilization-theatre-workers/i7/.worker-stage-i7.json` remains absent.
 - No completion JSON was fabricated or written without the actual stage ID.
 - `HERMES_SESSION_ID` was available as `local-392510cf7c1139f22b8d487a15b5646b42c42066d5ac08bcc246464762ccff30`; the missing stage ID is the only relay-field blocker observed after PR/head readback.
+
+Completion relay stage (r2)
+- Stage: `i7-fix-r2-20261127`.
+- Child session: `local-96a4a081b9c30128ab99a0dab331ff21e1044357257d2078e9edadb1d6380c60`.
+- The r2 completion JSON is written only after the final receipt update push and exact remote-head/PR readback.
 
 Blockers and unverified layers
 - Real Credential Manager behavior and authorized credential access remain unverified.
