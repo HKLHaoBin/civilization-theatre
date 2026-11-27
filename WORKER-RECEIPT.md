@@ -58,6 +58,12 @@ Delivery readback
 - `gh pr view 11 --json ...` — exit 0; URL and head read back as above.
 - No CI, release, device, browser, live provider, Pi SDK, account, or billing acceptance was run or claimed.
 
+Fix/re-review delivery readback
+- Fix source/tests/docs commit: `a24522ae80de87f6917a93d2e77a971d4297daa1`.
+- `git push -u origin issue/i7` — exit 0; remote head after the fix delivery: `a24522ae80de87f6917a93d2e77a971d4297daa1`.
+- `gh pr view 11 --repo HKLHaoBin/civilization-theatre --json ...` — exit 0; PR URL `https://github.com/HKLHaoBin/civilization-theatre/pull/11`, base `main`, head `issue/i7`, state `OPEN`, head readback equal to the fix commit.
+- No review, self-review, merge, CI, release, device, browser, live provider, account, or billing acceptance was run or claimed.
+
 Completion relay blocker
 - `HERMES_COMPLETION_RELAY_STAGE_ID` was absent from the stage environment.
 - The required fallback path `D:/Dev/src/civilization-theatre-workers/i7/.worker-stage-i7.json` remains absent.
