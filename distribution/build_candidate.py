@@ -44,19 +44,6 @@ CANDIDATE_FILES = (
     "app/execution.py",
     "app/scenario.py",
     "app/source_attestation.py",
-    "app/data/scenario.json",
-    "app/data/scenarios/contact-v2-iron-4.json",
-    "app/data/scenarios/contact-v2-iron-5.json",
-    "app/data/scenarios/contact-v2-iron-6.json",
-    "app/data/scenarios/event-wakeup-v1-iron-4.json",
-    "app/data/scenarios/event-wakeup-v1-iron-5.json",
-    "app/data/scenarios/event-wakeup-v1-iron-6.json",
-    "app/data/scenarios/iron-4.json",
-    "app/data/scenarios/iron-5.json",
-    "app/data/scenarios/iron-6.json",
-    "app/data/scenarios/lifecycle-v1-iron-4.json",
-    "app/data/scenarios/military-v1-iron-4.json",
-    "app/data/scenarios/staged-projects-v1-iron-4.json",
 )
 CANDIDATE_SET = frozenset(CANDIDATE_FILES)
 
@@ -198,6 +185,12 @@ def json_bytes(value: Any) -> bytes:
     )
 
 
+def same_metadata(actual: Any, expected: Any) -> bool:
+    # Python dictionary equality equates True with 1; provenance flags must keep
+    # their JSON scalar types as well as their values. Ignore object key order.
+    return json.dumps(actual, sort_keys=True) == json.dumps(expected, sort_keys=True)
+
+
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(json_bytes(value))
@@ -206,7 +199,7 @@ def write_json(path: Path, value: Any) -> None:
 def load_json(path: Path) -> Any:
     if path.is_symlink() or not path.is_file():
         raise CandidateError(f"missing or linked JSON file: {path}")
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(canonical_bytes(path.read_bytes()).decode("utf-8"))
 
 
 def safe_relative(value: str) -> str:
@@ -220,8 +213,11 @@ def safe_relative(value: str) -> str:
 def safe_repo_path(root: Path, relative: str) -> Path:
     relative = safe_relative(relative)
     path = root.joinpath(*PurePosixPath(relative).parts)
-    if path.is_symlink():
-        raise CandidateError(f"symlink is not accepted: {relative}")
+    current = root
+    for part in PurePosixPath(relative).parts:
+        current = current / part
+        if current.is_symlink() or getattr(current, "is_junction", lambda: False)():
+            raise CandidateError(f"linked path is not accepted: {relative}")
     resolved_root = root.resolve()
     resolved_path = path.resolve()
     if not resolved_path.is_relative_to(resolved_root):
@@ -235,7 +231,7 @@ def license_files(root: Path) -> list[str]:
 
 
 def load_baseline(root: Path) -> tuple[dict[str, Any], dict[str, Any], str, str]:
-    manifest_path = root / BASELINE_MANIFEST.relative_to(ROOT)
+    manifest_path = safe_repo_path(root, BASELINE_MANIFEST.relative_to(ROOT).as_posix())
     if manifest_path.is_symlink() or not manifest_path.is_file():
         raise CandidateError(f"missing baseline manifest: {manifest_path}")
     raw_manifest = manifest_path.read_bytes()
@@ -261,9 +257,13 @@ def load_baseline(root: Path) -> tuple[dict[str, Any], dict[str, Any], str, str]
         if not source.is_file():
             raise CandidateError(f"manifest source is missing: {relative}")
         pinned_bytes(source, pin)
-    sources_path = root / SOURCES_RECORD.relative_to(ROOT)
+    sources_path = safe_repo_path(root, SOURCES_RECORD.relative_to(ROOT).as_posix())
     sources = load_json(sources_path)
     return manifest, sources, manifest_sha_lf, manifest_sha_raw
+
+
+def geography_scenario(relative: str) -> bool:
+    return relative == "app/data/scenario.json" or relative.startswith("app/data/scenarios/")
 
 
 def candidate_import_report(root: Path, candidate_paths: set[str]) -> dict[str, dict[str, Any]]:
@@ -347,6 +347,11 @@ def candidate_import_report(root: Path, candidate_paths: set[str]) -> dict[str, 
 
 
 def candidate_dependency_disposition(relative: str) -> dict[str, Any]:
+    if geography_scenario(relative):
+        return {
+            "status": "blocked_external_reuse",
+            "required": ["excluded app/data/geography.json", "redistribution-rights review for derived geography references/records"],
+        }
     if relative in CANDIDATE_SET:
         return {
             "status": "closed",
@@ -431,7 +436,22 @@ def license_disposition(relative: str, repository_license: list[str]) -> dict[st
                     "upstream_commit": UPSTREAM_COMMIT,
                     "recorded_license_sha256": UPSTREAM_LICENSE_RECORDED_SHA256,
                     "observed_public_license_sha256": UPSTREAM_LICENSE_OBSERVED_SHA256,
-                    "status": "hash_mismatch",
+                    "status": "hash_mismatch_unresolved",
+                },
+            ],
+        }
+    if geography_scenario(relative):
+        return {
+            "status": "unresolved_external_redistribution",
+            "publication": "blocked",
+            "evidence": [
+                "app/data/SOURCES.json records upstream hashes and an upstream commit; this derived scenario references or embeds the external geography. Applicable redistribution obligations have not been cleared.",
+                {
+                    "upstream_repository": UPSTREAM_REPOSITORY,
+                    "upstream_commit": UPSTREAM_COMMIT,
+                    "recorded_license_sha256": UPSTREAM_LICENSE_RECORDED_SHA256,
+                    "observed_public_license_sha256": UPSTREAM_LICENSE_OBSERVED_SHA256,
+                    "status": "hash_mismatch_unresolved",
                 },
             ],
         }
@@ -451,6 +471,16 @@ def license_disposition(relative: str, repository_license: list[str]) -> dict[st
 
 
 def source_disposition(relative: str, sources: dict[str, Any]) -> dict[str, Any]:
+    if geography_scenario(relative):
+        return {
+            "kind": "derived_external_geography_scenario",
+            "record": "app/data/SOURCES.json",
+            "parent_source": "app/data/geography.json",
+            "geography_sha256": sources["sha256"],
+            "upstream_repository": UPSTREAM_REPOSITORY,
+            "upstream_commit": sources["original_source"]["upstream_commit"],
+            "relationship": "geography pin and place references; named packs also embed upstream country/settlement records alongside authored fictional assumptions",
+        }
     if relative == "app/data/geography.json":
         original = sources.get("original_source", {})
         return {
@@ -477,6 +507,8 @@ def source_disposition(relative: str, sources: dict[str, Any]) -> dict[str, Any]
 
 
 def distribution_reason(relative: str) -> str:
+    if geography_scenario(relative):
+        return "excluded: geography-derived references/records require the same external-reuse review as geography.json"
     if relative in CANDIDATE_SET:
         return "dependency-closed static review allowlist"
     if relative == "app/data/geography.json":
@@ -520,7 +552,6 @@ def deliverable_dispositions(repository_license: list[str]) -> list[dict[str, An
             "generated",
             "stdlib-free documentation",
         ),
-        ("WORKER-RECEIPT.md", "authored", "stdlib-free delivery receipt"),
     )
     return [
         {
@@ -540,7 +571,7 @@ def build_inventory(
     manifest: dict[str, Any],
     sources: dict[str, Any],
     manifest_sha_lf: str,
-    manifest_sha_raw: str,
+    _manifest_sha_raw: str,
 ) -> dict[str, Any]:
     repository_license = license_files(root)
     entries = []
@@ -548,17 +579,14 @@ def build_inventory(
         relative = safe_relative(relative)
         is_candidate = relative in CANDIDATE_SET
         source_path = safe_repo_path(root, relative)
-        worktree_raw = source_path.read_bytes()
-        pinned, line_ending_style = pinned_bytes(source_path, pin)
+        pinned, _ = pinned_bytes(source_path, pin)
         entries.append(
             {
                 "path": relative,
                 "baseline": {
                     "bytes": pin["bytes"],
                     "sha256": pin["sha256"],
-                    "pinned_line_endings": line_ending_style,
-                    "worktree_bytes": len(worktree_raw),
-                    "worktree_sha256": sha256_bytes(worktree_raw),
+                    "pinned_line_endings": "CRLF" if b"\r\n" in pinned else "LF",
                     "pinned_bytes": len(pinned),
                 },
                 "source": source_disposition(relative, sources),
@@ -581,7 +609,6 @@ def build_inventory(
             "commit": "3126c45",
             "manifest": "baseline/generation-manifest.1446.original.json",
             "manifest_sha256_lf": manifest_sha_lf,
-            "manifest_sha256_worktree_bytes": manifest_sha_raw,
             "members": len(entries),
             "flags": {
                 key: manifest.get(key)
@@ -651,7 +678,7 @@ def scan_candidate_files(output: Path) -> tuple[list[str], dict[str, list[str]]]
     return sorted(relative_paths), secret_matches
 
 
-def write_candidate_note(output: Path, inventory_sha256: str) -> None:
+def candidate_note_bytes(inventory_sha256: str) -> bytes:
     lines = [
         "1446 source candidate — internal review only",
         "",
@@ -661,8 +688,8 @@ def write_candidate_note(output: Path, inventory_sha256: str) -> None:
         "This directory is a dependency-closed static source review subset, not a product runtime, installer, release, or acceptance receipt.",
         "",
         "Source disposition:",
-        "- The copied source bytes come from the 1446 baseline manifest and preserve each entry's exact pinned bytes; most text is LF and the six pinned scenario fixtures retain their recorded CRLF bytes.",
-        "- app/data/geography.json is intentionally absent because its external reuse has no redistribution-rights evidence.",
+        "- The five copied Python source files preserve their exact generation-1446 baseline pins when built. Verification accepts only equivalent LF/CRLF checkout transformations, not other edits.",
+        "- No data JSON is included. app/data/geography.json and all thirteen geography-derived scenario JSON are excluded pending redistribution-rights review.",
         "",
         "License disposition:",
         "- No license grant is asserted by this candidate. The baseline has no tracked license file; maintainer authorization is required before external publication.",
@@ -671,11 +698,15 @@ def write_candidate_note(output: Path, inventory_sha256: str) -> None:
         "- Included Python files use only the Python standard library and candidate-internal imports.",
         "- Optional SIWC and Pi/Node surfaces are intentionally absent because their dependencies and authorization were not cleared.",
         "",
-        f"Source inventory: distribution/source-inventory.json (sha256 {inventory_sha256})",
+        f"Source inventory: distribution/source-inventory.json (LF-canonical sha256 {inventory_sha256})",
         "",
         "Unverified by design: product services, real models, paid calls, browser acceptance, device builds, runtime isolation, databases, and release acceptance.",
     ]
-    (output / "CANDIDATE.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return ("\n".join(lines) + "\n").encode("utf-8")
+
+
+def write_candidate_note(output: Path, inventory_sha256: str) -> None:
+    (output / "CANDIDATE.md").write_bytes(candidate_note_bytes(inventory_sha256))
 
 
 def build_distribution_manifest(
@@ -703,8 +734,11 @@ def build_distribution_manifest(
     manifest_files: dict[str, Any] = {}
     for relative in sorted(files):
         candidate_path = output / relative
-        raw = candidate_path.read_bytes()
+        worktree_raw = candidate_path.read_bytes()
         if relative == "CANDIDATE.md":
+            raw = candidate_note_bytes(inventory_sha256)
+            if canonical_bytes(worktree_raw) != raw:
+                raise CandidateError("candidate note content or inventory binding mismatch")
             manifest_files[relative] = {
                 "source_path": "distribution/candidate-1446/CANDIDATE.md",
                 "source": "issue_8_worker_generated",
@@ -714,9 +748,12 @@ def build_distribution_manifest(
                 "sha256": sha256_bytes(raw),
                 "canonical_bytes": len(canonical_bytes(raw)),
                 "canonical_sha256": sha256_bytes(canonical_bytes(raw)),
-                }
+            }
             continue
         entry = expected_source_entries[relative]
+        raw = pinned_bytes(safe_repo_path(root, relative), entry["baseline"])[0]
+        if canonical_bytes(worktree_raw) != canonical_bytes(raw):
+            raise CandidateError(f"candidate/source mismatch: {relative}")
         manifest_files[relative] = {
             "source_path": relative,
             "source": entry["source"],
@@ -741,6 +778,7 @@ def build_distribution_manifest(
         "source_inventory": {
             "path": "distribution/source-inventory.json",
             "sha256": inventory_sha256,
+            "hash_mode": "LF_canonical",
         },
         "baseline": {
             "commit": "3126c45",
@@ -755,6 +793,8 @@ def build_distribution_manifest(
         "checks": {
             "baseline_manifest_verified": True,
             "allowlist_verified": True,
+            "complete_inventory_verified": True,
+            "geography_and_derived_scenario_data": "absent",
             "forbidden_paths": path_hits,
             "secret_pattern_hits": secret_matches,
             "dependency_report": import_report,
@@ -768,9 +808,9 @@ def build(root: Path, *, force: bool) -> dict[str, Any]:
     manifest, sources, manifest_sha_lf, manifest_sha_raw = load_baseline(root)
     import_report = candidate_import_report(root, set(CANDIDATE_FILES))
     inventory = build_inventory(root, manifest, sources, manifest_sha_lf, manifest_sha_raw)
-    inventory_path = root / INVENTORY_PATH.relative_to(ROOT)
-    distribution_manifest_path = root / DISTRIBUTION_MANIFEST_PATH.relative_to(ROOT)
-    output = root / DEFAULT_CANDIDATE_ROOT.relative_to(ROOT)
+    inventory_path = safe_repo_path(root, INVENTORY_PATH.relative_to(ROOT).as_posix())
+    distribution_manifest_path = safe_repo_path(root, DISTRIBUTION_MANIFEST_PATH.relative_to(ROOT).as_posix())
+    output = safe_repo_path(root, DEFAULT_CANDIDATE_ROOT.relative_to(ROOT).as_posix())
     if output.exists() or output.is_symlink():
         if not force:
             raise CandidateError(f"candidate output exists; use --force: {output}")
@@ -780,7 +820,7 @@ def build(root: Path, *, force: bool) -> dict[str, Any]:
             shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=False)
     write_json(inventory_path, inventory)
-    inventory_sha256 = sha256_file(inventory_path)
+    inventory_sha256 = sha256_file(inventory_path, canonical=True)
     for relative in CANDIDATE_FILES:
         source = safe_repo_path(root, relative)
         pin = manifest["files"][relative]
@@ -800,84 +840,42 @@ def build(root: Path, *, force: bool) -> dict[str, Any]:
 
 def check(root: Path) -> dict[str, Any]:
     manifest, sources, manifest_sha_lf, manifest_sha_raw = load_baseline(root)
-    inventory_path = root / INVENTORY_PATH.relative_to(ROOT)
-    distribution_manifest_path = root / DISTRIBUTION_MANIFEST_PATH.relative_to(ROOT)
-    output = root / DEFAULT_CANDIDATE_ROOT.relative_to(ROOT)
+    inventory_path = safe_repo_path(root, INVENTORY_PATH.relative_to(ROOT).as_posix())
+    distribution_manifest_path = safe_repo_path(root, DISTRIBUTION_MANIFEST_PATH.relative_to(ROOT).as_posix())
+    output = safe_repo_path(root, DEFAULT_CANDIDATE_ROOT.relative_to(ROOT).as_posix())
     inventory = load_json(inventory_path)
     distribution_manifest = load_json(distribution_manifest_path)
-    if inventory.get("schema") != "civilization-theatre-source-license-dependency-inventory-v1":
-        raise CandidateError("unexpected source inventory schema")
-    if distribution_manifest.get("schema") != "civilization-theatre-distribution-candidate-v1":
-        raise CandidateError("unexpected distribution manifest schema")
-    if distribution_manifest.get("source_inventory", {}).get("sha256") != sha256_file(inventory_path):
+    expected_inventory = build_inventory(root, manifest, sources, manifest_sha_lf, manifest_sha_raw)
+    # Compare every disposition, including excluded members, authored artifacts,
+    # license blockers and flags. A self-consistent metadata digest is not proof.
+    if not same_metadata(inventory, expected_inventory):
+        raise CandidateError("source inventory content mismatch: exhaustive baseline/disposition mapping required")
+    inventory_sha256 = sha256_file(inventory_path, canonical=True)
+    if distribution_manifest.get("source_inventory", {}).get("sha256") != inventory_sha256:
         raise CandidateError("distribution manifest source-inventory hash mismatch")
-    if inventory.get("baseline", {}).get("manifest_sha256_lf") != manifest_sha_lf:
-        raise CandidateError("inventory baseline manifest hash mismatch")
-    if inventory.get("baseline", {}).get("manifest_sha256_worktree_bytes") != manifest_sha_raw:
-        raise CandidateError("inventory raw manifest hash mismatch")
-    if inventory.get("candidate", {}).get("allowlist") != list(CANDIDATE_FILES):
-        raise CandidateError("inventory allowlist mismatch")
     import_report = candidate_import_report(output, set(CANDIDATE_FILES))
-    files, secret_matches = scan_candidate_files(output)
-    path_hits = forbidden_path_hits(files)
-    if path_hits or secret_matches:
-        raise CandidateError(
-            "candidate exclusion check failed: "
-            + json.dumps({"paths": path_hits, "secrets": secret_matches})
-        )
-    expected = set(CANDIDATE_FILES) | {"CANDIDATE.md"}
-    if set(files) != expected:
-        raise CandidateError(
-            "candidate file set mismatch: "
-            + json.dumps({"actual": files, "expected": sorted(expected)})
-        )
-    manifest_files = distribution_manifest.get("files", {})
-    if set(manifest_files) != expected:
-        raise CandidateError("distribution manifest file set mismatch")
-    for relative in files:
-        path = output / relative
-        raw = path.read_bytes()
-        record = manifest_files[relative]
-        exact = len(raw) == record.get("bytes") and sha256_bytes(raw) == record.get("sha256")
-        canonical = len(canonical_bytes(raw)) == record.get("canonical_bytes") and sha256_bytes(
-            canonical_bytes(raw)
-        ) == record.get("canonical_sha256")
-        if not exact and not canonical:
-            raise CandidateError(f"candidate hash mismatch: {relative}")
-    for relative in CANDIDATE_FILES:
-        source = safe_repo_path(root, relative)
-        expected_entry = next(entry for entry in inventory["entries"] if entry["path"] == relative)
-        raw = (output / relative).read_bytes()
-        expected_bytes = pinned_bytes(source, manifest["files"][relative])[0]
-        if raw != expected_bytes and canonical_bytes(raw) != canonical_bytes(expected_bytes):
-            raise CandidateError(f"candidate/source mismatch: {relative}")
-        baseline_exact = (
-            len(raw) == expected_entry["baseline"]["bytes"]
-            and sha256_bytes(raw) == expected_entry["baseline"]["sha256"]
-        )
-        baseline_canonical = (
-            len(canonical_bytes(raw)) == len(canonical_bytes(expected_bytes))
-            and sha256_bytes(canonical_bytes(raw))
-            == sha256_bytes(canonical_bytes(expected_bytes))
-        )
-        if not baseline_exact and not baseline_canonical:
-            raise CandidateError(f"candidate baseline pin mismatch: {relative}")
-    if distribution_manifest.get("checks", {}).get("databases_credentials_private_evidence_media") != "absent":
-        raise CandidateError("candidate exclusion receipt is not explicit")
+    expected_distribution_manifest = build_distribution_manifest(
+        root, output, expected_inventory, inventory_sha256, import_report
+    )
+    if not same_metadata(distribution_manifest, expected_distribution_manifest):
+        raise CandidateError("distribution manifest content mismatch: complete file/exclusion/blocker mapping required")
     return {
         "status": "passed",
         "mode": "static_candidate_check",
         "generation": 1446,
         "candidate_root": "distribution/candidate-1446",
-        "candidate_file_count": len(files),
+        "candidate_file_count": len(expected_distribution_manifest["files"]),
         "baseline_member_count": len(manifest["files"]),
+        "excluded_baseline_path_count": len(expected_distribution_manifest["excluded_baseline_paths"]),
         "baseline_manifest_sha256_lf": manifest_sha_lf,
-        "source_inventory_sha256": sha256_file(inventory_path),
+        "observed_baseline_manifest_sha256": manifest_sha_raw,
+        "source_inventory_sha256": inventory_sha256,
+        "source_inventory_hash_mode": "LF_canonical",
         "publication_status": distribution_manifest.get("publication_status"),
         "publication_blocker_count": len(distribution_manifest.get("publication_blockers", [])),
         "dependency_files_checked": len(import_report),
-        "forbidden_path_hits": path_hits,
-        "secret_pattern_hits": secret_matches,
+        "forbidden_path_hits": expected_distribution_manifest["checks"]["forbidden_paths"],
+        "secret_pattern_hits": expected_distribution_manifest["checks"]["secret_pattern_hits"],
     }
 
 

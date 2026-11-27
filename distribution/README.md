@@ -39,15 +39,14 @@ The candidate contains only:
 - `app/execution.py`
 - `app/scenario.py`
 - `app/source_attestation.py`
-- the tracked scenario JSON files under `app/data/`
 - the generated `candidate-1446/CANDIDATE.md`
 
-The builder preserves each baseline entry's exact pinned bytes before hashing and writing. Most text is LF; six scenario fixtures retain their recorded CRLF bytes. This avoids changing the original generation manifest's byte identity on a Windows checkout.
+The builder preserves the five included Python files' exact generation-1446 baseline pins. The geography snapshot and all thirteen geography-derived scenario JSON files are excluded: their hashes, place references, or embedded country/settlement records remain external geography provenance. These modules are independently reviewable source, not a runnable product: no complete world, data pack or runtime attestation set is supplied.
 
 Explicit exclusions and blockers
 
-- `app/data/geography.json` is excluded. `app/data/SOURCES.json` records upstream hashes and a commit, but citations and hashes do not establish redistribution rights.
-- The recorded upstream license hash for the geography snapshot does not match the public `LICENSE` bytes at the recorded upstream commit; the exact snapshot license remains unresolved.
+- `app/data/geography.json` and all thirteen scenario JSON files are excluded. Every scenario references the geography pin; named packs additionally embed upstream country/settlement records. Fictional population and institution assumptions do not remove those reused records. The inventory maps these scenarios to the external geography and marks their source/license/dependency disposition blocked.
+- `app/data/SOURCES.json` records upstream hashes and a commit, but citations and hashes do not establish redistribution rights. The recorded upstream license hash does not match the public `LICENSE` bytes at the recorded commit, so the exact snapshot license remains unresolved.
 - The baseline has no tracked `LICENSE`, `COPYING`, or equivalent license grant. External publication therefore requires maintainer authorization.
 - `app/requirements-siwc.txt` declares optional `PyJWT==2.10.1` and `cryptography==46.0.3`; those packages are not bundled, installed, or executed by this task.
 - `app/pi_worker.mjs` refers to `@earendil-works/pi-agent-core`, `@earendil-works/pi-ai`, and `typebox`, which are not present in the repository. The Pi/runtime surface is excluded.
