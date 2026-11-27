@@ -138,6 +138,9 @@ def _create_product_actors(world, db_path, provider='scripted-pi'):
             raise ProviderFault('REAL_DM_SCOPE_REQUIRED')
         host = ActorHost(world, db_path, adjudicator=Adjudicator(world), dm_provider=dm)
         host.real_gateway, host.real_settings = gateway, settings
+        from .provider_adapter import RealProviderAdapter, ProviderRouter
+        adapter = RealProviderAdapter(gateway)
+        host.bind_provider_router(ProviderRouter('real', roles=adapter, dm=adapter))
         return host
     # A genuine registered ActorHost; chooser strategy does not change its type.
     from .actors import ActorHost

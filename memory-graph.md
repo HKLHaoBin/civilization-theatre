@@ -19,3 +19,10 @@ Source/distribution boundary
 - WORKER-RECEIPT.md is the delivery evidence/readback, not CI, device, browser, model, runtime-isolation or release acceptance.
 
 Source/license disposition of this graph: Issue-8-authored documentation; no license grant asserted; publication requires maintainer authorization. Dependency disposition: plain documentation, no runtime dependency. This graph is not part of the clean candidate payload.
+
+## Active Issue 7 contributor stage
+
+- Worktree: `D:/Dev/src/civilization-theatre-workers/i7`; branch: `issue/i7`.
+- Base: `9179892d86d6344615e79c684d28ab6949ffa34c`, the exact latest `origin/main` base supplied by the handoff.
+- Scope: independent role/DM service routing, opaque credential adapters, the real/Pi seam, bounded retry and usage accounting, redaction, fail-closed pause contracts, and fake-fixture static/contract checks.
+- Real provider, credential-manager, account, billing, browser, device, database, and product acceptance remain unverified; no live service call is evidence for this stage.
