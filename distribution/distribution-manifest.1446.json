@@ -1,0 +1,648 @@
+{
+  "schema": "civilization-theatre-distribution-candidate-v1",
+  "issue": 8,
+  "generation": 1446,
+  "candidate_status": "INTERNAL_REVIEW_ONLY",
+  "publication_status": "BLOCKED",
+  "candidate_root": "distribution/candidate-1446",
+  "source_inventory": {
+    "path": "distribution/source-inventory.json",
+    "sha256": "a66284526be09b9bf7422fd8fd4c910a9a74eb7a6913d90845307c4db928fdb5"
+  },
+  "baseline": {
+    "commit": "3126c45",
+    "manifest": "baseline/generation-manifest.1446.original.json",
+    "manifest_sha256_lf": "248b31fd3402673e2fed83ec3b6c8ef5c71c3f96c13706d05c6310978e308150",
+    "members": 158
+  },
+  "files": {
+    "CANDIDATE.md": {
+      "source_path": "distribution/candidate-1446/CANDIDATE.md",
+      "source": "issue_8_worker_generated",
+      "license": "issue_8_authored_no_license_asserted",
+      "dependency_status": "resolved_stdlib_free_documentation",
+      "bytes": 1271,
+      "sha256": "41b90d43bb86fe437e33f95386bf1951c84c8cb181f952e0db4a6b5d380137f3",
+      "canonical_bytes": 1271,
+      "canonical_sha256": "41b90d43bb86fe437e33f95386bf1951c84c8cb181f952e0db4a6b5d380137f3"
+    },
+    "app/__init__.py": {
+      "source_path": "app/__init__.py",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 68,
+      "sha256": "2a4b5ceccf5fab38a06793ba77653b047f254d575b93adfd593c7b3cc9bde64b",
+      "canonical_bytes": 68,
+      "canonical_sha256": "2a4b5ceccf5fab38a06793ba77653b047f254d575b93adfd593c7b3cc9bde64b",
+      "baseline_bytes": 68,
+      "baseline_sha256": "2a4b5ceccf5fab38a06793ba77653b047f254d575b93adfd593c7b3cc9bde64b"
+    },
+    "app/data/scenario.json": {
+      "source_path": "app/data/scenario.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 994,
+      "sha256": "5e2f67365797a82f0bb0f958ae92cb3833c185fa0ed90a3230b27d989b8ad688",
+      "canonical_bytes": 994,
+      "canonical_sha256": "5e2f67365797a82f0bb0f958ae92cb3833c185fa0ed90a3230b27d989b8ad688",
+      "baseline_bytes": 994,
+      "baseline_sha256": "5e2f67365797a82f0bb0f958ae92cb3833c185fa0ed90a3230b27d989b8ad688"
+    },
+    "app/data/scenarios/contact-v2-iron-4.json": {
+      "source_path": "app/data/scenarios/contact-v2-iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 9945,
+      "sha256": "d66194eb92e0a2d4b46ec5ed8e7d1be191751b49e71bba4a6d2200f682dc577b",
+      "canonical_bytes": 9641,
+      "canonical_sha256": "33b316467049460e252417db124e01d190ccce8d85f7728a06cfa7523f036d02",
+      "baseline_bytes": 9945,
+      "baseline_sha256": "d66194eb92e0a2d4b46ec5ed8e7d1be191751b49e71bba4a6d2200f682dc577b"
+    },
+    "app/data/scenarios/contact-v2-iron-5.json": {
+      "source_path": "app/data/scenarios/contact-v2-iron-5.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 12199,
+      "sha256": "0fd132056030d804456dad0cb5b58ac8b97d5ea8a8ae5c8798d4ca84a4f79459",
+      "canonical_bytes": 11826,
+      "canonical_sha256": "c6c44510f94d4a9ba0446caf88634fac0b43f24b04a7135bd6b6791bb7c1ee74",
+      "baseline_bytes": 12199,
+      "baseline_sha256": "0fd132056030d804456dad0cb5b58ac8b97d5ea8a8ae5c8798d4ca84a4f79459"
+    },
+    "app/data/scenarios/contact-v2-iron-6.json": {
+      "source_path": "app/data/scenarios/contact-v2-iron-6.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 14445,
+      "sha256": "91982b1a82ac514947359f2a542e4d7e99eee0ae8a6731c94518a4e90fbb2c30",
+      "canonical_bytes": 14003,
+      "canonical_sha256": "7ad9fdefd8c2b6665bef0caa441d0fb0b4d4812000a6669f96693179fb861072",
+      "baseline_bytes": 14445,
+      "baseline_sha256": "91982b1a82ac514947359f2a542e4d7e99eee0ae8a6731c94518a4e90fbb2c30"
+    },
+    "app/data/scenarios/event-wakeup-v1-iron-4.json": {
+      "source_path": "app/data/scenarios/event-wakeup-v1-iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 10484,
+      "sha256": "e5eb5bdfa2eef043fe83c58003d93eaa36ef054bb7dbb54351c84d95b5474556",
+      "canonical_bytes": 10484,
+      "canonical_sha256": "e5eb5bdfa2eef043fe83c58003d93eaa36ef054bb7dbb54351c84d95b5474556",
+      "baseline_bytes": 10484,
+      "baseline_sha256": "e5eb5bdfa2eef043fe83c58003d93eaa36ef054bb7dbb54351c84d95b5474556"
+    },
+    "app/data/scenarios/event-wakeup-v1-iron-5.json": {
+      "source_path": "app/data/scenarios/event-wakeup-v1-iron-5.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 12669,
+      "sha256": "f8e9ca66f8fb942b515c06c9c9e63bc2eabc553548f670aaa2e47512e8b9d874",
+      "canonical_bytes": 12669,
+      "canonical_sha256": "f8e9ca66f8fb942b515c06c9c9e63bc2eabc553548f670aaa2e47512e8b9d874",
+      "baseline_bytes": 12669,
+      "baseline_sha256": "f8e9ca66f8fb942b515c06c9c9e63bc2eabc553548f670aaa2e47512e8b9d874"
+    },
+    "app/data/scenarios/event-wakeup-v1-iron-6.json": {
+      "source_path": "app/data/scenarios/event-wakeup-v1-iron-6.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 14846,
+      "sha256": "ec9ddd9afe145b384de62cc57c623f1f4c0c216a3c43aa74a31f22adbf0ae1ef",
+      "canonical_bytes": 14846,
+      "canonical_sha256": "ec9ddd9afe145b384de62cc57c623f1f4c0c216a3c43aa74a31f22adbf0ae1ef",
+      "baseline_bytes": 14846,
+      "baseline_sha256": "ec9ddd9afe145b384de62cc57c623f1f4c0c216a3c43aa74a31f22adbf0ae1ef"
+    },
+    "app/data/scenarios/iron-4.json": {
+      "source_path": "app/data/scenarios/iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 9846,
+      "sha256": "47f509b652ccf86b990e86efebf9efd923fa5a23fe252f0ab568f7ffd0e62be8",
+      "canonical_bytes": 9544,
+      "canonical_sha256": "63e3ce28c268e91aa7e726455409723a5039ae2dc5c56602f1895307b3404485",
+      "baseline_bytes": 9846,
+      "baseline_sha256": "47f509b652ccf86b990e86efebf9efd923fa5a23fe252f0ab568f7ffd0e62be8"
+    },
+    "app/data/scenarios/iron-5.json": {
+      "source_path": "app/data/scenarios/iron-5.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 12100,
+      "sha256": "4133c51199a87d3f5812e40d43c753526b21895ad9f7a0274bdcc6856fff7b8b",
+      "canonical_bytes": 11729,
+      "canonical_sha256": "3740e235f016a7e4dcc6162ce2f812a57f577258c05097ddb217b09ed087bf2e",
+      "baseline_bytes": 12100,
+      "baseline_sha256": "4133c51199a87d3f5812e40d43c753526b21895ad9f7a0274bdcc6856fff7b8b"
+    },
+    "app/data/scenarios/iron-6.json": {
+      "source_path": "app/data/scenarios/iron-6.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 14346,
+      "sha256": "dab7d4d8f669c5ea01d279fb2a4aec1528849a7612f4045030a010d550e14502",
+      "canonical_bytes": 13906,
+      "canonical_sha256": "52362f21ceb6f7bd8a46a87c98d9291f7d8cdc2ef4d18fcf8b6a9c40d8eefef4",
+      "baseline_bytes": 14346,
+      "baseline_sha256": "dab7d4d8f669c5ea01d279fb2a4aec1528849a7612f4045030a010d550e14502"
+    },
+    "app/data/scenarios/lifecycle-v1-iron-4.json": {
+      "source_path": "app/data/scenarios/lifecycle-v1-iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 13935,
+      "sha256": "d3a1caf3f27e3c8e9f2281f7de7ee66c50504a906b229f769a5a25a4176da3a1",
+      "canonical_bytes": 13935,
+      "canonical_sha256": "d3a1caf3f27e3c8e9f2281f7de7ee66c50504a906b229f769a5a25a4176da3a1",
+      "baseline_bytes": 13935,
+      "baseline_sha256": "d3a1caf3f27e3c8e9f2281f7de7ee66c50504a906b229f769a5a25a4176da3a1"
+    },
+    "app/data/scenarios/military-v1-iron-4.json": {
+      "source_path": "app/data/scenarios/military-v1-iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 11187,
+      "sha256": "04fdd259d4ecc749a28cf9635b458ab6b5481a5060236f5d57f07e2558b8b781",
+      "canonical_bytes": 11187,
+      "canonical_sha256": "04fdd259d4ecc749a28cf9635b458ab6b5481a5060236f5d57f07e2558b8b781",
+      "baseline_bytes": 11187,
+      "baseline_sha256": "04fdd259d4ecc749a28cf9635b458ab6b5481a5060236f5d57f07e2558b8b781"
+    },
+    "app/data/scenarios/staged-projects-v1-iron-4.json": {
+      "source_path": "app/data/scenarios/staged-projects-v1-iron-4.json",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 13544,
+      "sha256": "871585a474fea4f40d07476e4c4c942743b9afba60bb4b882ee94f7fea95987b",
+      "canonical_bytes": 13544,
+      "canonical_sha256": "871585a474fea4f40d07476e4c4c942743b9afba60bb4b882ee94f7fea95987b",
+      "baseline_bytes": 13544,
+      "baseline_sha256": "871585a474fea4f40d07476e4c4c942743b9afba60bb4b882ee94f7fea95987b"
+    },
+    "app/disease.py": {
+      "source_path": "app/disease.py",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 2564,
+      "sha256": "9ed63080f1af641497bc5f7238b561ab522c02deb4f8a92726d9988d1a34c77b",
+      "canonical_bytes": 2564,
+      "canonical_sha256": "9ed63080f1af641497bc5f7238b561ab522c02deb4f8a92726d9988d1a34c77b",
+      "baseline_bytes": 2564,
+      "baseline_sha256": "9ed63080f1af641497bc5f7238b561ab522c02deb4f8a92726d9988d1a34c77b"
+    },
+    "app/execution.py": {
+      "source_path": "app/execution.py",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 443,
+      "sha256": "41ab73b5e5b20754de1665ec192230487d31979f763f75133426726c3814f329",
+      "canonical_bytes": 443,
+      "canonical_sha256": "41ab73b5e5b20754de1665ec192230487d31979f763f75133426726c3814f329",
+      "baseline_bytes": 443,
+      "baseline_sha256": "41ab73b5e5b20754de1665ec192230487d31979f763f75133426726c3814f329"
+    },
+    "app/scenario.py": {
+      "source_path": "app/scenario.py",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 28250,
+      "sha256": "038b26123c37038e793aeac290083b202212fc23633f2f2294de83c1ad448636",
+      "canonical_bytes": 28250,
+      "canonical_sha256": "038b26123c37038e793aeac290083b202212fc23633f2f2294de83c1ad448636",
+      "baseline_bytes": 28250,
+      "baseline_sha256": "038b26123c37038e793aeac290083b202212fc23633f2f2294de83c1ad448636"
+    },
+    "app/source_attestation.py": {
+      "source_path": "app/source_attestation.py",
+      "source": {
+        "kind": "baseline_1446_import",
+        "record": "baseline/generation-manifest.1446.original.json",
+        "recorded_root": "D:\\Dev\\src\\civilization-theatre\\runtime\\lifecycle-candidate-1446-review-v01"
+      },
+      "license": {
+        "status": "baseline_project_rights_not_evidenced",
+        "publication": "blocked_pending_maintainer_authorization",
+        "evidence": [
+          "No tracked LICENSE, LICENSE.txt, LICENSE.md, COPYING, or COPYING.txt is present at the baseline root."
+        ]
+      },
+      "dependency_status": "closed",
+      "bytes": 4964,
+      "sha256": "fe3f21c992daf5fc34b7f05e154973ed69f4fc8bdcf1aa6eeda127c3541ef122",
+      "canonical_bytes": 4964,
+      "canonical_sha256": "fe3f21c992daf5fc34b7f05e154973ed69f4fc8bdcf1aa6eeda127c3541ef122",
+      "baseline_bytes": 4964,
+      "baseline_sha256": "fe3f21c992daf5fc34b7f05e154973ed69f4fc8bdcf1aa6eeda127c3541ef122"
+    }
+  },
+  "excluded_baseline_paths": [
+    "app/actor_execution.py",
+    "app/actors.py",
+    "app/adjudication.py",
+    "app/coordinator_execution.py",
+    "app/coordinator_maintenance.py",
+    "app/coordinator_scheduler.py",
+    "app/credential_adapter.py",
+    "app/data/SOURCES.json",
+    "app/data/geography.json",
+    "app/failure_projection.py",
+    "app/pi_worker.mjs",
+    "app/product_cli.py",
+    "app/real_intent.py",
+    "app/real_provider.py",
+    "app/real_settings.py",
+    "app/replay.py",
+    "app/requirements-siwc.txt",
+    "app/scripted_dm.py",
+    "app/server.py",
+    "app/service_descriptors.py",
+    "app/siwc_oauth.py",
+    "app/siwc_responses.py",
+    "app/siwc_storage.py",
+    "app/siwc_transactions.py",
+    "app/tests/activation_fixtures.py",
+    "app/tests/legacy_control_coordinator.py",
+    "app/tests/p023b4_b_continued_cycle.py",
+    "app/tests/p023b4_b_cycle.py",
+    "app/tests/siwc1005_crashworker.py",
+    "app/tests/siwc979_synthetic.py",
+    "app/tests/test_activation_adjudication.py",
+    "app/tests/test_activation_application_kill.py",
+    "app/tests/test_activation_domain_rejection_guards.py",
+    "app/tests/test_activation_domain_rejection_reentry.py",
+    "app/tests/test_activation_domain_rejections.py",
+    "app/tests/test_activation_entry_cancellation.py",
+    "app/tests/test_activation_phase_proof.py",
+    "app/tests/test_activation_proof_regressions.py",
+    "app/tests/test_activation_technical_blocking.py",
+    "app/tests/test_activation_technical_blocking_controls.py",
+    "app/tests/test_activation_terminal_ack.py",
+    "app/tests/test_activation_terminal_ack_controls.py",
+    "app/tests/test_activation_transactions.py",
+    "app/tests/test_actor_activation_process.py",
+    "app/tests/test_actor_activations.py",
+    "app/tests/test_actor_binding.py",
+    "app/tests/test_actor_deadline.py",
+    "app/tests/test_actor_execution.py",
+    "app/tests/test_actor_failure_scope.py",
+    "app/tests/test_actor_process_execution.py",
+    "app/tests/test_actor_server_execution.py",
+    "app/tests/test_actors.py",
+    "app/tests/test_adjudication.py",
+    "app/tests/test_adjudication_regressions.py",
+    "app/tests/test_causality.py",
+    "app/tests/test_cleanup_budget_layers.py",
+    "app/tests/test_coordinator_error_routing.py",
+    "app/tests/test_coordinator_execution.py",
+    "app/tests/test_coordinator_ledger_recovery.py",
+    "app/tests/test_coordinator_parent_acceptance.py",
+    "app/tests/test_coordinator_startup_budget.py",
+    "app/tests/test_coordinator_startup_r3.py",
+    "app/tests/test_coordinator_windows.py",
+    "app/tests/test_default_dm.py",
+    "app/tests/test_disease.py",
+    "app/tests/test_dispatch_ack_continued.py",
+    "app/tests/test_dispatch_cleanup_continued.py",
+    "app/tests/test_dm_host.py",
+    "app/tests/test_economy_genesis_v1.py",
+    "app/tests/test_event_wakeup1043.py",
+    "app/tests/test_event_wakeup_product_packs.py",
+    "app/tests/test_execution_contract.py",
+    "app/tests/test_execution_fencing.py",
+    "app/tests/test_history_audit_batch_v1.py",
+    "app/tests/test_history_audit_sql_lexical_v1.py",
+    "app/tests/test_integration.py",
+    "app/tests/test_lifecycle_authority1100.py",
+    "app/tests/test_lifecycle_history1101.py",
+    "app/tests/test_lifecycle_product1087.py",
+    "app/tests/test_lifecycle_rollback1152.py",
+    "app/tests/test_lifecycle_source_drift1103.py",
+    "app/tests/test_material_transport_expiry_acceptance_v1.py",
+    "app/tests/test_material_transport_v1.py",
+    "app/tests/test_military_v1.py",
+    "app/tests/test_native_attach_contention977.py",
+    "app/tests/test_persistent_close_cleanup.py",
+    "app/tests/test_persistent_coordinator_acceptance.py",
+    "app/tests/test_persistent_coordinator_dispatch.py",
+    "app/tests/test_persistent_dispatch_ack.py",
+    "app/tests/test_preview.py",
+    "app/tests/test_product_entry950.py",
+    "app/tests/test_production_loop_v1.py",
+    "app/tests/test_readonly_replay.py",
+    "app/tests/test_real_integration967.py",
+    "app/tests/test_real_lifecycle967.py",
+    "app/tests/test_real_meeting_product1080.py",
+    "app/tests/test_real_provider967.py",
+    "app/tests/test_registered_completion_notice_v1.py",
+    "app/tests/test_registered_material_transport_v1.py",
+    "app/tests/test_registered_military_v1.py",
+    "app/tests/test_registered_production_runtime_v1.py",
+    "app/tests/test_review_regressions.py",
+    "app/tests/test_scenario.py",
+    "app/tests/test_server.py",
+    "app/tests/test_server_scenario.py",
+    "app/tests/test_settings992.cjs",
+    "app/tests/test_siwc1005_account.py",
+    "app/tests/test_siwc1005_transport.py",
+    "app/tests/test_siwc1008_account.py",
+    "app/tests/test_siwc1008_settings.py",
+    "app/tests/test_siwc1011_reconciliation.py",
+    "app/tests/test_siwc979_consumers.py",
+    "app/tests/test_siwc979_crypto.py",
+    "app/tests/test_siwc979_oauth.py",
+    "app/tests/test_siwc979_responses.py",
+    "app/tests/test_siwc992_backend.py",
+    "app/tests/test_siwc998_cancel.py",
+    "app/tests/test_staged_projects1067.py",
+    "app/tests/test_technical_maintenance.py",
+    "app/tests/test_technical_maintenance_arch_a.py",
+    "app/tests/test_technical_maintenance_closing.py",
+    "app/tests/test_technical_maintenance_r1.py",
+    "app/tests/test_technical_window_release.py",
+    "app/tests/test_trace_http.py",
+    "app/tests/test_transmission.py",
+    "app/tests/test_web_assets.py",
+    "app/tests/test_world.py",
+    "app/verify_adjudication.py",
+    "app/verify_disease.py",
+    "app/verify_observation_period.py",
+    "app/verify_preview.py",
+    "app/verify_release.py",
+    "app/verify_scenarios.py",
+    "app/verify_transmission.py",
+    "app/web/app.css",
+    "app/web/app.js",
+    "app/web/index.html",
+    "app/web/settings.html",
+    "app/web/settings.js",
+    "app/world.py"
+  ],
+  "checks": {
+    "baseline_manifest_verified": true,
+    "allowlist_verified": true,
+    "forbidden_paths": [],
+    "secret_pattern_hits": {},
+    "dependency_report": {
+      "app/__init__.py": {
+        "status": "closed",
+        "internal": [],
+        "external": [],
+        "missing_internal": []
+      },
+      "app/disease.py": {
+        "status": "closed",
+        "internal": [],
+        "external": [],
+        "missing_internal": []
+      },
+      "app/execution.py": {
+        "status": "closed",
+        "internal": [
+          "app/source_attestation.py"
+        ],
+        "external": [],
+        "missing_internal": []
+      },
+      "app/scenario.py": {
+        "status": "closed",
+        "internal": [
+          "app/disease.py"
+        ],
+        "external": [],
+        "missing_internal": []
+      },
+      "app/source_attestation.py": {
+        "status": "closed",
+        "internal": [],
+        "external": [],
+        "missing_internal": []
+      }
+    },
+    "databases_credentials_private_evidence_media": "absent"
+  },
+  "publication_blockers": [
+    {
+      "code": "PROJECT_LICENSE_AUTHORIZATION_REQUIRED",
+      "reason": "The baseline repository has no tracked license grant; maintainer authorization is required before external publication.",
+      "evidence": "The tracked baseline tree contains no LICENSE, COPYING, or equivalent license file."
+    },
+    {
+      "code": "EXTERNAL_GEOGRAPHY_REUSE_UNRESOLVED",
+      "reason": "app/data/geography.json records external upstream reuse, but this repository contains no redistribution grant for that material.",
+      "evidence": "app/data/SOURCES.json records an upstream commit and hashes, not redistribution rights."
+    },
+    {
+      "code": "RECORDED_UPSTREAM_LICENSE_HASH_MISMATCH",
+      "reason": "The recorded upstream license bytes do not match the public LICENSE bytes at the recorded commit, so the exact source snapshot license is unresolved.",
+      "evidence": "app/data/SOURCES.json records e0eedba615d5cd1b986afb6c5b3a4b1ae33713e7e9dc74d19daec5e3221f9d2e; the public guaner-334/civ-atlas@176cc9168a69be30d1e09bfd85db84a5f3fb99da LICENSE was observed as 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0."
+    },
+    {
+      "code": "OPTIONAL_SIWC_DEPENDENCIES_NOT_CLEARED",
+      "reason": "The optional SIWC surface declares PyJWT and cryptography, but they are not part of this source-only candidate and were not installed or executed.",
+      "evidence": "app/requirements-siwc.txt; validation boundary forbids dependency installation and product execution."
+    },
+    {
+      "code": "PI_SDK_DEPENDENCIES_NOT_CLEARED",
+      "reason": "The Pi worker refers to external Node packages that are not present in this repository, so the runtime surface is excluded.",
+      "evidence": "app/pi_worker.mjs refers to @earendil-works/pi-agent-core, @earendil-works/pi-ai, and typebox; node_modules is not in the baseline tree."
+    },
+    {
+      "code": "TEST_DEPENDENCY_UNDECLARED",
+      "reason": "The excluded test surface imports psutil without a corresponding tracked requirement declaration.",
+      "evidence": "app/tests/test_activation_application_kill.py imports psutil; app/requirements-siwc.txt does not declare it."
+    },
+    {
+      "code": "RUNTIME_AND_EVIDENCE_SURFACES_EXCLUDED",
+      "reason": "Runtime, database, credential, private-evidence, integration-test, and verifier surfaces are not distribution payloads for this first candidate.",
+      "evidence": ".gitignore and the source paths themselves identify these as research/runtime material."
+    }
+  ]
+}
