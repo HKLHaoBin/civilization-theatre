@@ -53,6 +53,12 @@ Delivery readback
 - `gh pr view 11 --json ...` — exit 0; URL and head read back as above.
 - No CI, release, device, browser, live provider, Pi SDK, account, or billing acceptance was run or claimed.
 
+Completion relay blocker
+- `HERMES_COMPLETION_RELAY_STAGE_ID` was absent from the stage environment.
+- The required fallback path `D:/Dev/src/civilization-theatre-workers/i7/.worker-stage-i7.json` remains absent.
+- No completion JSON was fabricated or written without the actual stage ID.
+- `HERMES_SESSION_ID` was available as `local-392510cf7c1139f22b8d487a15b5646b42c42066d5ac08bcc246464762ccff30`; the missing stage ID is the only relay-field blocker observed after PR/head readback.
+
 Blockers and unverified layers
 - Real Credential Manager behavior and authorized credential access remain unverified.
 - Live provider/Pi calls, account authorization, model output, billing/usage confirmation, and duplicate external billing behavior remain unverified.
