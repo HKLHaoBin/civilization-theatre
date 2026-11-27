@@ -12,6 +12,7 @@ import threading
 import uuid
 from urllib.parse import urlsplit
 from .service_descriptors import validate,public_summary
+from .usage_accounting import UsageJournal,UsageJournalError
 
 
 def default_credential_factory():
@@ -47,6 +48,7 @@ class SettingsStore:
     def __init__(self,path,*,credential_factory=None):
         self.path=Path(path)
         self.usage_path=self.path.with_name('provider-usage.jsonl')
+        self.usage_journal=UsageJournal(self.usage_path)
         self.credential_factory=credential_factory or default_credential_factory
         self.lock=threading.RLock()
         from .siwc_oauth import SIWCSession
@@ -127,11 +129,8 @@ class SettingsStore:
 
     def usage(self,event):
         # Fixed sanitized shape only; no prompts/URL/model/errors/key/ref/response.
-        fields={'event','kind','request_id','request_index','input_tokens','output_tokens','cost','billing_status'}
-        if type(event) is not dict or set(event)!=fields:
-            raise ValueError('INVALID_USAGE_EVENT')
         with self.lock:
-            if self.usage_path.is_symlink():raise ValueError('INVALID_USAGE_FILE')
-            with self.usage_path.open('a',encoding='utf-8',newline='\n') as stream:
-                stream.write(json.dumps(event,sort_keys=True,allow_nan=False)+'\n')
-                stream.flush();os.fsync(stream.fileno())
+            try:
+                return self.usage_journal.append(event)
+            except UsageJournalError as error:
+                raise ValueError(str(error)) from None

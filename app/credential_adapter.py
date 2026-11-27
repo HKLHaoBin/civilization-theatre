@@ -2,6 +2,7 @@
 import re
 import ctypes as c
 from ctypes import wintypes as w
+from typing import Protocol
 
 CRED_TYPE_GENERIC = 1
 CRED_PERSIST_LOCAL_MACHINE = 2
@@ -29,6 +30,13 @@ class CredentialError(Exception):
         self.code = code
         self.winerror = winerror
         super().__init__(code, winerror)
+
+
+class CredentialAdapter(Protocol):
+    """Minimal opaque-secret contract used by settings and the gateway."""
+    def read(self, ref): ...
+    def write(self, ref, secret): ...
+    def delete(self, ref): ...
 
 
 class WindowsCredentialAdapter:
@@ -136,3 +144,38 @@ class OpaqueSecret:
         for index in range(len(self._buffer)):
             self._buffer[index] = 0
         self._closed = True
+
+
+class InMemoryCredentialAdapter:
+    """Redacted synthetic vault for contract tests only.
+
+    This adapter is deliberately not selected by production defaults. It keeps
+    mutable copies, returns OpaqueSecret values, and never exposes stored bytes
+    through repr/str or a status method.
+    """
+    def __init__(self):
+        self._values = {}
+
+    def read(self, ref):
+        validate_ref(ref)
+        value = self._values.get(ref)
+        return None if value is None else OpaqueSecret(value)
+
+    def write(self, ref, secret):
+        validate_ref(ref)
+        if type(secret) not in (bytes, bytearray) or not 1 <= len(secret) <= MAX_BLOB:
+            raise ValueError('INVALID_SECRET')
+        self._values[ref] = bytearray(secret)
+
+    def delete(self, ref):
+        validate_ref(ref)
+        value = self._values.pop(ref, None)
+        if value is None:
+            return False
+        for index in range(len(value)):
+            value[index] = 0
+        return True
+
+    def clear(self):
+        for ref in tuple(self._values):
+            self.delete(ref)

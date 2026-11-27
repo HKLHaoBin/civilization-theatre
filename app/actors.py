@@ -48,6 +48,7 @@ class ActorHost:
         self.dm_provider = dm_provider
         self.real_gateway = None
         self.real_settings = None
+        self.provider_router = None
         self.db_path = str(db_path)
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
@@ -356,7 +357,25 @@ class ActorHost:
         for reader in self._readers:
             reader.start()
 
+    def bind_provider_router(self, router):
+        """Bind an explicit real or scripted provider route once.
+
+        Real mode is intentionally not allowed to retain a Pi fallback. The
+        legacy direct attributes remain supported for existing hosts/tests.
+        """
+        from .provider_adapter import ProviderRouter
+        if not isinstance(router, ProviderRouter):
+            raise ValueError('INVALID_PROVIDER_ROUTER')
+        if router.real != (self.real_gateway is not None):
+            raise ValueError('PROVIDER_ROUTER_MODE_MISMATCH')
+        if self.provider_router is not None and self.provider_router is not router:
+            raise ValueError('PROVIDER_ROUTER_ALREADY_BOUND')
+        self.provider_router = router
+        return router.snapshot()
+
     def _request(self, payload):
+        if self.provider_router is not None:
+            return self.provider_router.role(payload, getattr(self._local, 'attempt', None))
         if self.real_gateway is not None:
             return self.real_gateway.role(payload, getattr(self._local, 'attempt', None))
         self._start()
@@ -384,7 +403,9 @@ class ActorHost:
         return response.get('result', response)
 
     def _stop(self):
-        if self.real_gateway is not None:
+        if self.provider_router is not None:
+            self.provider_router.close()
+        elif self.real_gateway is not None:
             self.real_gateway.close()
         with self._worker_lock:
             return self._stop_worker()
@@ -781,8 +802,12 @@ class ActorHost:
         options = {'execution': execution} if execution is not None else {}
         if body.get('action') == 'propose' and self.adjudicator is not None:
             attempt = self._attempt
-            target = self.dm_provider
+            provider_target = self.dm_provider
+            if not callable(provider_target):
+                raise ActorRunError('DM_PROVIDER_UNAVAILABLE')
             if self.real_gateway is not None:
+                gateway = self.real_gateway
+                router = self.provider_router
                 with self._private(execution, person_id) as db:
                     row = db.execute(f'SELECT request FROM {self._schema}actor_intents WHERE person_id=? AND intent_id=?',
                                      (person_id, intent_id)).fetchone()
@@ -792,12 +817,19 @@ class ActorHost:
                     if original_request.get('schema_version') not in (2, 3):
                         raise ActorRunError('ACTOR_PROVIDER_MODE_MISMATCH')
                     version = original_request['service_version']
-                def target(payload):
-                    return self.real_gateway.dm(payload, getattr(self._local, 'attempt', None), version)
-            provider = target
+                if router is not None:
+                    def routed_target(payload):
+                        return router.dm(payload, getattr(self._local, 'attempt', None), version)
+                    provider_target = routed_target
+                else:
+                    def gateway_target(payload):
+                        return gateway.dm(payload, getattr(self._local, 'attempt', None), version)
+                    provider_target = gateway_target
+            provider = provider_target
             if attempt is not None and attempt.permit == execution:
-                def provider(payload):
-                    return attempt.call(self, target, payload)
+                def attempted_provider(payload):
+                    return attempt.call(self, provider_target, payload)
+                provider = attempted_provider
             if 'physical_attempt' in body:
                 # Preserve the complete durable v3 body; omission remains the
                 # original v1/v2 keyword/call shape (not an injected null).
